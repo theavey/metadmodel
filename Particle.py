@@ -1,5 +1,5 @@
 """
-Initialize the package when loaded.
+This defines the Particle class for an object that will 'travel' on an FES.
 
 Copyright (C) 2017 Thomas John Heavey IV
 
@@ -15,6 +15,15 @@ You should have received a copy of the GNU General Public License along with thi
 not, see http://www.gnu.org/licenses/.
 """
 
-from . import FES
-from . import Particle
-from . import Simulation
+
+class Particle(object):
+    """"""
+
+    def __init__(self, fes):
+        """
+
+        :param fes:
+        """
+        self.FES = fes
+
+

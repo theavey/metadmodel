@@ -34,7 +34,7 @@ class FES(object):
         """
         Return the value of the FES at this location
 
-        :param x:
+        :param args:
         :return:
         """
         raise NotImplementedError
@@ -43,7 +43,10 @@ class FES(object):
         """
         Return the derivative of the FES at this location
 
-        :param x:
+        The ad package (https://pypi.python.org/pypi/ad) seems interesting for taking
+        derivatives of arbitrary functions. Might be excessive here, but still nice to
+        be able to handle pretty much anything.
+        :param args:
         :return:
         """
         raise NotImplementedError
@@ -52,10 +55,13 @@ class FES(object):
 class FES1D(FES):
     """"""
 
-    def __init__(self):
-        """Initialize a FES object
-
+    def __init__(self, *args):
         """
+        Initialize a FES object
+
+        :param args:
+        """
+        self.dimensionality = 1
         raise NotImplementedError
 
     def value(self, x):
@@ -80,8 +86,12 @@ class FES1D(FES):
 class FES2D(FES):
     """"""
 
-    def __init__(self):
-        """"""
+    def __init__(self, *args):
+        """
+
+        :param args:
+        """
+        self.dimensionality = 2
         raise NotImplementedError
 
     def value(self, x, y):
@@ -97,6 +107,58 @@ class FES2D(FES):
     def deriv(self, x, y):
         """
         Return the derivative of the FES at this location
+
+        :param x:
+        :param y:
+        :return:
+        """
+        raise NotImplementedError
+
+
+class MetadFES1D(FES1D):
+    """
+
+
+    There is some way to enforce 'multiple inheritance' in the sense of forcing this to
+    implement certain things (as would be appropriate for a metadynamics object).
+    Not sure how to do that right now, and I'm not sure it's worth figuring out at this
+    point.
+    """
+
+    def __init__(self, width, height, *args):
+        """
+
+        :param args:
+        """
+        super().__init__(*args)
+        self._width = width
+        self._height = height
+
+    def add_hill(self, x):
+        """
+        Add a hill to the FES centered here
+
+        :param x:
+        :return:
+        """
+        raise NotImplementedError
+
+
+class MetadFES2D(FES2D):
+    """"""
+
+    def __init__(self, width, height, *args):
+        """
+
+        :param args:
+        """
+        super().__init__(*args)
+        self._width = width
+        self._height = height
+
+    def add_hill(self, x, y):
+        """
+        Add a hill to the FES centered here
 
         :param x:
         :param y:

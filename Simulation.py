@@ -1,5 +1,5 @@
 """
-Initialize the package when loaded.
+Defines a Simulation class for simulation of metadynamics.
 
 Copyright (C) 2017 Thomas John Heavey IV
 
@@ -15,6 +15,10 @@ You should have received a copy of the GNU General Public License along with thi
 not, see http://www.gnu.org/licenses/.
 """
 
-from . import FES
-from . import Particle
-from . import Simulation
+
+class Simulation(object):
+    """"""
+
+    def __init__(self):
+        """"""
+        raise NotImplementedError
