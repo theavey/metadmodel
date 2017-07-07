@@ -19,11 +19,12 @@ not, see http://www.gnu.org/licenses/.
 class Particle(object):
     """"""
 
-    def __init__(self, fes):
+    def __init__(self, fes, mass=1):
         """
 
         :param fes:
         """
         self.FES = fes
+        self.mass = mass
 
 
