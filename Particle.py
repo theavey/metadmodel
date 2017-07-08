@@ -15,16 +15,39 @@ You should have received a copy of the GNU General Public License along with thi
 not, see http://www.gnu.org/licenses/.
 """
 
+import numpy as np
+
 
 class Particle(object):
     """"""
 
-    def __init__(self, fes, mass=1):
+    def __init__(self, fes, mass=1, x0, v0):
         """
 
         :param fes:
+        :param mass:
+        :param x0:
+        :param v0:
         """
         self.FES = fes
         self.mass = mass
+        self.velocity = v0
+        self.position = x0
+        self.trajectory = np.array([[x0, v0]])
 
+    @property
+    def calc_force(self):
+        """
+        Calculates the force on the Particle at the current position
 
+        :return: the force on the particle
+        :rtype: np.array
+        """
+        return -self.FES.deriv(self.position)
+
+    def calc_acceleration(self):
+        """
+        Calculates the acceleration of the Particle at the current location
+
+        :return:
+        """
