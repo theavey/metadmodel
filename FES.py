@@ -24,11 +24,12 @@ class FES(object):
     methods and such in derived classes.
     """
 
-    # def __init__(self):
-    #     """Initialize a FES object
-    #
-    #     """
-    #     raise NotImplementedError
+    def __init__(self):
+        """Initialize a FES object
+
+        """
+        self._dimensionality = None
+        pass
 
     def value(self, *args):
         """
@@ -51,6 +52,16 @@ class FES(object):
         """
         raise NotImplementedError
 
+    @property
+    def dimensionality(self):
+        """Dimensionality of the FES"""
+        return self._dimensionality
+
+    @dimensionality.setter
+    def dimensionality(self, value):
+        raise AttributeError('The dimensionality is not settable. If you want different '
+                             'dimensionality, use the class for that dimension.')
+
 
 class FES1D(FES):
     """"""
@@ -61,7 +72,8 @@ class FES1D(FES):
 
         :param args:
         """
-        self.dimensionality = 1
+        super().__init__()
+        self._dimensionality = 1
         raise NotImplementedError
 
     def value(self, x):
@@ -91,7 +103,8 @@ class FES2D(FES):
 
         :param args:
         """
-        self.dimensionality = 2
+        super().__init__()
+        self._dimensionality = 2
         raise NotImplementedError
 
     def value(self, x, y):
