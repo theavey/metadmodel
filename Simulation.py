@@ -50,8 +50,13 @@ class Simulation(object):
         else:
             self._dimension = 1
         if particle is not None:
+            dim_from_part = particle.dimensionality
+            if dim_from_part != self._dimension:
+                print("Dimensionality from Particle doesn't match default or passed "
+                      "value.\n"
+                      "Using the value from the given Particle.")
+                self._dimension = dim_from_part
             self.particle = particle
-            self._dimension = self.particle.dimensionality
         else:
             if fes is not None:
                 dim_from_fes = fes.dimensionality
