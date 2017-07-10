@@ -16,6 +16,7 @@ not, see http://www.gnu.org/licenses/.
 """
 
 import autograd as ag
+import autograd.numpy as anp
 import math
 
 
@@ -193,7 +194,7 @@ class MetadFES1D(FES1D):
         :rtype: lambda
         """
         return lambda x: (self._height / (self._width * (2. * math.pi))) * \
-            math.exp(-0.5 * ((x - center) / self._width)**2)
+            anp.exp(-0.5 * ((x - center) / self._width)**2)
 
     def _make_hills(self):
         """"""

@@ -50,8 +50,8 @@ class Simulation(object):
         else:
             self._dimension = 1
         if particle is not None:
-            # todo check dimensionality of the particle and set it here
             self.particle = particle
+            self._dimension = self.particle.dimensionality
         else:
             if fes is not None:
                 dim_from_fes = fes.dimensionality
