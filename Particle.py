@@ -22,7 +22,7 @@ from . import FES
 class Particle(object):
     """"""
 
-    def __init__(self, fes, x0, v0, mass=1., time_step_size = 1.):
+    def __init__(self, fes, x0, v0, mass=1., time_step_size=1.):
         """
 
         :param FES.FES fes: FES on which the particle moves
@@ -96,7 +96,20 @@ class Particle(object):
     def acceleration(self, value):
         raise AttributeError('acceleration not currently settable')
 
-    def move(self, time=1., return_prev=False):
+    @property
+    def dimensionality(self) -> int:
+        """
+        Dimensionality of the FES on which the particle travels
+
+        :return: dimensionality of FES
+        """
+        return self._FES.dimensionality
+
+    @dimensionality.setter
+    def dimensionality(self, value):
+        raise AttributeError('Cannot change (or set) the dimensionality!')
+
+    def move(self, time: float=1., return_prev: bool=False) -> tuple:
         """
         Move particle using Velocity Verlet algorithm
 
