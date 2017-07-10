@@ -101,6 +101,8 @@ class Simulation(object):
 
         :return: the positions
         """
+        if self._trajectory is None:
+            print('No trajectory data yet! Have you run yet?')
         return self.trajectory[:, 0]
 
     @positions.setter
@@ -114,6 +116,8 @@ class Simulation(object):
 
         :return: the velocities
         """
+        if self._trajectory is None:
+            print('No trajectory data yet! Have you run yet?')
         return self.trajectory[:, 0]
 
     @velocities.setter
@@ -122,13 +126,13 @@ class Simulation(object):
 
     # Running Simulation #####################
 
-    def time_step(self):
+    def _time_step(self, step_num):
         """
         Move the particle and append position to trajectory
         :return: nothing
         """
         new_position, new_velocity = self.particle.move()
-        self.trajectory.append([new_position, new_velocity])
+        self.trajectory[step_num] = new_position, new_velocity
 
     def run(self, steps=1000):
         """
@@ -143,9 +147,10 @@ class Simulation(object):
             print('using default particle')
             # todo put in default particle here
             pass
+        self._trajectory = np.zeros((steps+1, 2*self._dimension), float)
         self._trajectory = np.array([[self.particle.position, self.particle.velocity]])
         for i in range(steps):
-            self.time_step()
+            self._time_step(i)
         print(f'Done running {steps}!')
 
     # Analysis and Plotting #####################
