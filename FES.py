@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License along with thi
 not, see http://www.gnu.org/licenses/.
 """
 
+import autograd as ag
+
 
 class FES(object):
     """
@@ -24,11 +26,19 @@ class FES(object):
     methods and such in derived classes.
     """
 
-    def __init__(self):
+    def __init__(self, func):
         """Initialize a FES object
 
+        :param func: A function that defines the FES. It must work with autograd which
+        means that it must contain basic python operations or autograd wrapped numpy
+        functions. There are some special other things it can accept. See the autograd
+        documentation: https://github.com/HIPS/autograd
+
+        The function must return a scalar value, and the dimensionality of the input
+        must match the dimensionality of the desired FES.
         """
         self._dimensionality = None
+        self._func = func
         pass
 
     def value(self, *args):
@@ -46,7 +56,9 @@ class FES(object):
 
         The ad package (https://pypi.python.org/pypi/ad) seems interesting for taking
         derivatives of arbitrary functions. Might be excessive here, but still nice to
-        be able to handle pretty much anything.
+        be able to handle pretty much anything. Hasn't been updated in a couple years.
+
+        This seems newer: https://github.com/HIPS/autograd
         :param args:
         :return:
         """
@@ -66,44 +78,44 @@ class FES(object):
 class FES1D(FES):
     """"""
 
-    def __init__(self, *args):
+    def __init__(self, func, *args):
         """
         Initialize a FES object
 
         :param args:
         """
-        super().__init__()
+        super().__init__(func)
         self._dimensionality = 1
-        raise NotImplementedError
+        self._grad_func = ag.grad(self._func)
 
-    def value(self, x):
+    def value(self, x) -> float:
         """
         Return the value of the FES at this location
 
-        :param x:
-        :return:
+        :param x: location
+        :return: value of the FES at this location
         """
-        raise NotImplementedError
+        return self._func(x)
 
-    def deriv(self, x):
+    def deriv(self, x) -> float:
         """
         Return the derivative of the FES at this location
 
         :param x:
         :return:
         """
-        raise NotImplementedError
+        return self._grad_func(x)
 
 
 class FES2D(FES):
     """"""
 
-    def __init__(self, *args):
+    def __init__(self, func, *args):
         """
 
         :param args:
         """
-        super().__init__()
+        super().__init__(func)
         self._dimensionality = 2
         raise NotImplementedError
 
@@ -138,12 +150,12 @@ class MetadFES1D(FES1D):
     point.
     """
 
-    def __init__(self, width, height, *args):
+    def __init__(self, func, width, height, *args):
         """
 
         :param args:
         """
-        super().__init__(*args)
+        super().__init__(func, *args)
         self._width = width
         self._height = height
 
@@ -160,12 +172,12 @@ class MetadFES1D(FES1D):
 class MetadFES2D(FES2D):
     """"""
 
-    def __init__(self, width, height, *args):
+    def __init__(self, func, width, height, *args):
         """
 
         :param args:
         """
-        super().__init__(*args)
+        super().__init__(func, *args)
         self._width = width
         self._height = height
 
