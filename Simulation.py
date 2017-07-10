@@ -132,10 +132,10 @@ class Simulation(object):
         Move the particle and append position to trajectory
         :return: nothing
         """
-        new_position, new_velocity = self.particle.move()
+        new_position, new_velocity = self.particle.move(0.5)
         self.trajectory[step_num] = new_position, new_velocity
 
-    def run(self, steps=1000):
+    def run(self, steps: int =1000):
         """
         Run the simulation for a number of steps
 
@@ -150,7 +150,7 @@ class Simulation(object):
             pass
         self._trajectory = np.zeros((steps+1, 2*self._dimension), float)
         self._trajectory[0] = self.particle.position, self.particle.velocity
-        for i in range(1, steps):
+        for i in range(1, steps+1):
             self._time_step(i)
         print(f'Done running {steps}!')
 
