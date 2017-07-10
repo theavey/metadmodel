@@ -18,6 +18,7 @@ not, see http://www.gnu.org/licenses/.
 from . import Particle
 from . import FES
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Simulation(object):
@@ -56,13 +57,15 @@ class Simulation(object):
                 if dim_from_fes != self._dimension:
                     print("Dimensionality from FES doesn't match default or passed "
                           "value.\n"
-                          "Using the value from the given FES")
+                          "Using the value from the given FES.")
                 self._dimension = dim_from_fes
                 self._FES = fes
         raise NotImplementedError
 
+    # Properties ########################
+
     @property
-    def particle(self):
+    def particle(self) -> Particle.Particle:
         """
         Particle in use for this simulation
 
@@ -76,13 +79,15 @@ class Simulation(object):
         self._particle = particle
 
     @property
-    def trajectory(self):
+    def trajectory(self) -> np.array:
         """
         Trajectory of the particle
 
         :return: trajectory (n x 2)
         :rtype: np.array
         """
+        if self._trajectory is None:
+            print('No trajectory data yet! Have you run yet?')
         return self._trajectory
 
     @trajectory.setter
@@ -90,14 +95,41 @@ class Simulation(object):
         # alternatively, could just make this append, but not sure if that's desirable
         raise AttributeError('Cannot directly set the trajectory')
 
+    @property
+    def positions(self) -> np.array:
+        """
+        Positions from the trajectory
+
+        :return: the positions
+        """
+        return self.trajectory[:, 0]
+
+    @positions.setter
+    def positions(self, value):
+        raise AttributeError('Cannot directly set positions or trajectory')
+
+    @property
+    def velocities(self) -> np.array:
+        """
+        Positions from the trajectory
+
+        :return: the velocities
+        """
+        return self.trajectory[:, 0]
+
+    @velocities.setter
+    def velocities(self, value):
+        raise AttributeError('Cannot directly set velocities or trajectory')
+
+    # Running Simulation #####################
+
     def time_step(self):
         """
         Move the particle and append position to trajectory
-        :return:
+        :return: nothing
         """
         new_position, new_velocity = self.particle.move()
         self.trajectory.append([new_position, new_velocity])
-        raise NotImplementedError
 
     def run(self, steps=1000):
         """
@@ -115,3 +147,22 @@ class Simulation(object):
         self._trajectory = np.array([[self.particle.position, self.particle.velocity]])
         for i in range(steps):
             self.time_step()
+
+    # Analysis and Plotting #####################
+
+    def plot_trajectory(self, **kwargs) -> plt.figure:
+        """
+        Plot the trajectory on a scatter plot
+
+        If it's a 2D trajectory, the axes will be the two dimensions.
+        If it's a 1D trajectory, it will be the position as a function of time.
+
+        :param kwargs: arguments to be passed to the plot function
+        :return: figure object of the scatter plot
+        """
+        # fig, ax = plt.subplots()
+        # ax.plot(self.trajectory)
+        # Not sure if this works, and it definitely won't work for 1D trajectory
+        # Check here: https://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.plot.html
+        # return fig
+        raise NotImplementedError
