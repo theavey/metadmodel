@@ -60,7 +60,6 @@ class Simulation(object):
                           "Using the value from the given FES.")
                 self._dimension = dim_from_fes
                 self._FES = fes
-        raise NotImplementedError
 
     # Properties ########################
 
@@ -147,6 +146,7 @@ class Simulation(object):
         self._trajectory = np.array([[self.particle.position, self.particle.velocity]])
         for i in range(steps):
             self.time_step()
+        print(f'Done running {steps}!')
 
     # Analysis and Plotting #####################
 
