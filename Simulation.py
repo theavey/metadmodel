@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 class Simulation(object):
     """"""
 
-    def __init__(self, dimension=None, particle=None, fes=None, metad=False):
+    def __init__(self, dimension=None, particle=None, fes=None, metad_freq: int=5):
         """
 
         :param int dimension: Dimensionality of the simulation. Currently either 1 or 2.
@@ -42,6 +42,7 @@ class Simulation(object):
         self._particle: Particle.Particle = None
         self._FES: FES.FES = None
         self._metad: bool = None
+        self._metad_freq = metad_freq
         self._trajectory: np.array = None
 
         if dimension is not None:
@@ -144,14 +145,20 @@ class Simulation(object):
         :return:
         """
         if self.particle is None:
-
             print('using default particle')
             # todo put in default particle here
             pass
+        self._metad = self.particle.metad
         self._trajectory = np.zeros((steps+1, 2*self._dimension), float)
         self._trajectory[0] = self.particle.position, self.particle.velocity
-        for i in range(1, steps+1):
-            self._time_step(i)
+        if not self._metad:
+            for i in range(1, steps+1):
+                self._time_step(i)
+        else:
+            for i in range(1, steps+1):
+                if i % self._metad_freq == 0:
+                    self.particle.add_hill()
+                self._time_step(i)
         print(f'Done running {steps}!')
 
     # Analysis and Plotting #####################

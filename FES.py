@@ -201,7 +201,7 @@ class MetadFES1D(FES1D):
             return lambda x: 0.
         return lambda x: sum(self._gaussian(c)(x) for c in self._hill_list)
 
-    def add_hill(self, x: float):
+    def add_hill(self, x: float) -> None:
         """
         Add a hill to the FES centered here
 
@@ -213,6 +213,7 @@ class MetadFES1D(FES1D):
         # todo implement this on a grid (much faster for long simulations)
         self._fes_with_hills = lambda var: self._make_hills()(var) + self._func(var)
         self._grad_func = ag.grad(self._fes_with_hills)
+        # Might also need to redefine self.deriv
 
     def value(self, x) -> float:
         """
