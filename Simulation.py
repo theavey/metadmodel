@@ -173,9 +173,12 @@ class Simulation(object):
         :param kwargs: arguments to be passed to the plot function
         :return: figure object of the scatter plot
         """
-        # fig, ax = plt.subplots()
-        # ax.plot(self.trajectory)
-        # Not sure if this works, and it definitely won't work for 1D trajectory
-        # Check here: https://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.plot.html
-        # return fig
-        raise NotImplementedError
+        fig, ax = plt.subplots()
+        if self._dimension == 1:
+            ax.plot(self.positions)
+            ax.set_xlabel('time step')
+            ax.set_ylabel('$x$')
+            fig.tight_layout()
+            return fig
+        else:
+            raise NotImplementedError
