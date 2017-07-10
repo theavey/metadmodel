@@ -37,6 +37,7 @@ class Particle(object):
         self._position = x0
         self._trajectory = np.array([[x0, v0]])
         self._time_step_size = time_step_size
+        self._metad = self._FES.metad
 
     @property
     def position(self):
@@ -109,6 +110,20 @@ class Particle(object):
     def dimensionality(self, value):
         raise AttributeError('Cannot change (or set) the dimensionality!')
 
+    @property
+    def metad(self) -> bool:
+        """
+        Whether or not this is a metadynamics FES
+
+        :return: metad or not
+        """
+        return self._metad
+
+    @metad.setter
+    def metad(self, value):
+        raise AttributeError('The metadynamics state is not settable. \nUse a specific'
+                             'metad FES if that is what you want.')
+
     def move(self, time: float=1., return_prev: bool=False) -> tuple:
         """
         Move particle using Velocity Verlet algorithm
@@ -131,3 +146,11 @@ class Particle(object):
         else:
             ret_values = self._position, self._velocity
         return ret_values
+
+    def add_hill(self):
+        """
+        Add metad hill to FES
+
+        :return:
+        """
+        self._FES.add_hill(self.position)

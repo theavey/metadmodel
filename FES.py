@@ -16,6 +16,7 @@ not, see http://www.gnu.org/licenses/.
 """
 
 import autograd as ag
+import math
 
 
 class FES(object):
@@ -39,6 +40,7 @@ class FES(object):
         """
         self._dimensionality = None
         self._func = func
+        self._metad = None
         pass
 
     def value(self, *args):
@@ -74,6 +76,23 @@ class FES(object):
         raise AttributeError('The dimensionality is not settable. If you want different '
                              'dimensionality, use the class for that dimension.')
 
+    @property
+    def metad(self) -> bool:
+        """
+        Whether or not this is a metadynamics FES
+
+        :return: metad or not
+        """
+        return self._metad
+
+    @metad.setter
+    def metad(self, value):
+        raise AttributeError('The metadynamics state is not settable. \nUse a specific'
+                             'metad FES if that is what you want.')
+
+    def add_hill(self, *args):
+        raise AttributeError('Cannot add a hill to this non-metadynamics FES!')
+
 
 class FES1D(FES):
     """"""
@@ -86,6 +105,7 @@ class FES1D(FES):
         """
         super().__init__(func)
         self._dimensionality = 1
+        self._metad = False
         self._grad_func = ag.grad(self._func)
 
     def value(self, x) -> float:
@@ -117,6 +137,7 @@ class FES2D(FES):
         """
         super().__init__(func)
         self._dimensionality = 2
+        self._metad = False
         raise NotImplementedError
 
     def value(self, x, y):
@@ -150,7 +171,7 @@ class MetadFES1D(FES1D):
     point.
     """
 
-    def __init__(self, func, width, height, *args):
+    def __init__(self, func, width: float, height: float, *args):
         """
 
         :param args:
@@ -158,15 +179,49 @@ class MetadFES1D(FES1D):
         super().__init__(func, *args)
         self._width = width
         self._height = height
+        self._metad = True
+        self._hill_list = []  # might be better to do an array? pre-allocated?
+        self._fes_with_hills = self._func
+        self._grad_func = ag.grad(self._fes_with_hills)
 
-    def add_hill(self, x):
+    def _gaussian(self, center: float):
+        """
+        Gaussian function centered at center
+
+        :param center: middle of the Gaussian
+        :return: Gaussian function
+        :rtype: lambda
+        """
+        return lambda x: (self._height / (self._width * (2. * math.pi))) * \
+            math.exp(-0.5 * ((x - center) / self._width)**2)
+
+    def _make_hills(self):
+        """"""
+        if not self._hill_list:
+            return lambda x: 0.
+        return lambda x: sum(self._gaussian(c)(x) for c in self._hill_list)
+
+    def add_hill(self, x: float):
         """
         Add a hill to the FES centered here
 
-        :param x:
+        :param x: location of the particle
         :return:
         """
-        raise NotImplementedError
+        self._hill_list.append(x)
+        # I feel like this style below is terrible, but I am not sure how else to do it
+        # todo implement this on a grid (much faster for long simulations)
+        self._fes_with_hills = lambda var: self._make_hills()(var) + self._func(var)
+        self._grad_func = ag.grad(self._fes_with_hills)
+
+    def value(self, x) -> float:
+        """
+        Return the value of the FES and hills at this location
+
+        :param x: location
+        :return: value of the FES and hills at this location
+        """
+        return self._fes_with_hills(x)
 
 
 class MetadFES2D(FES2D):
@@ -180,6 +235,7 @@ class MetadFES2D(FES2D):
         super().__init__(func, *args)
         self._width = width
         self._height = height
+        self._metad = True
 
     def add_hill(self, x, y):
         """
