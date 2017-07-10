@@ -103,7 +103,7 @@ class Simulation(object):
         """
         if self._trajectory is None:
             print('No trajectory data yet! Have you run yet?')
-        return self.trajectory[:, 0]
+        return self.trajectory[:, 0:self._dimension]
 
     @positions.setter
     def positions(self, value):
@@ -118,7 +118,8 @@ class Simulation(object):
         """
         if self._trajectory is None:
             print('No trajectory data yet! Have you run yet?')
-        return self.trajectory[:, 0]
+        dim = self._dimension
+        return self.trajectory[:, dim:2*dim]
 
     @velocities.setter
     def velocities(self, value):
@@ -148,8 +149,8 @@ class Simulation(object):
             # todo put in default particle here
             pass
         self._trajectory = np.zeros((steps+1, 2*self._dimension), float)
-        self._trajectory = np.array([[self.particle.position, self.particle.velocity]])
-        for i in range(steps):
+        self._trajectory[0] = self.particle.position, self.particle.velocity
+        for i in range(1, steps):
             self._time_step(i)
         print(f'Done running {steps}!')
 
