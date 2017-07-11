@@ -138,7 +138,7 @@ class Simulation(object):
         Move the particle and append position to trajectory
         :return: nothing
         """
-        new_position, new_velocity = self.particle.move(0.5)
+        new_position, new_velocity = self.particle.move(1)
         self.trajectory[step_num] = new_position, new_velocity
 
     def run(self, steps: int =1000):
