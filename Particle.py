@@ -22,7 +22,8 @@ from . import FES
 class Particle(object):
     """"""
 
-    def __init__(self, fes, x0, v0, mass=1., time_step_size=1.):
+    def __init__(self, fes, x0, v0, mass=1., time_step_size=1., temp: float=None,
+                 nh_const: float=None):
         """
 
         :param FES.FES fes: FES on which the particle moves
@@ -30,14 +31,24 @@ class Particle(object):
         :param np.array v0: initial velocity of the particle
         :param float mass: mass of the particle
         :param float time_step_size: size of time steps to take
+        :param temp: temperature of the particle (for constant T simulations) in units of
+        (1 / k_b)
+        :param nh_const: The Nose-Hoover thermostat constant (often called Q)
         """
         self._FES = fes
         self._mass = mass
         self._velocity = v0
         self._position = x0
+        self._fric = 0
         self._trajectory = np.array([[x0, v0]])
         self._time_step_size = time_step_size
         self._metad = self._FES.metad
+        self._temp = temp
+        if self._temp:
+            if not nh_const:
+                raise SyntaxError('If temp is defined (const. T simulation) the '
+                                  'Nose-Hoover constant nh_const must also be defined')
+        self._nhc = nh_const
 
     @property
     def position(self):
@@ -98,6 +109,21 @@ class Particle(object):
         raise AttributeError('acceleration not currently settable')
 
     @property
+    def fric(self):
+        """
+        The acceleration of the Particle at the current location
+
+        :return: the acceleration
+        :rtype: np.array
+        """
+        return self._fric
+
+    @fric.setter
+    def fric(self, value):
+        print('Overriding current friction')
+        self._fric = value
+
+    @property
     def dimensionality(self) -> int:
         """
         Dimensionality of the FES on which the particle travels
@@ -128,6 +154,8 @@ class Particle(object):
         """
         Move particle using Velocity Verlet algorithm
 
+        The Nose-Hoover thermostat calculations are taken from here:
+        http://www2.ph.ed.ac.uk/~dmarendu/MVP/MVP03.pdf
         :param float time: number of time steps to move
         :param bool return_prev: Also return starting location and velocity (before
         movement)
@@ -137,10 +165,25 @@ class Particle(object):
         prev_position = self._position
         prev_velocity = self._velocity
         prev_acceleration = self.acceleration
-        self._position = prev_position + prev_velocity * time_step + \
-            0.5 * prev_acceleration * time_step**2
-        self._velocity = prev_velocity + 0.5 * time_step * \
-            (prev_acceleration + self.acceleration)
+        prev_fric = self._fric
+        if self._temp:
+            self._position = prev_position + prev_velocity * time_step + \
+                0.5 * (prev_acceleration - prev_fric * prev_velocity) * time_step**2
+            self._fric = prev_fric - \
+                0.5 * time_step / self._nhc * ((1+self.dimensionality)*self._temp -
+                                               self._mass * prev_velocity**2) + \
+                0.25 * time_step**2 / self._nhc * self._mass * prev_velocity * \
+                    (prev_acceleration - prev_velocity * prev_fric) + \
+                0.0625 * time_step**3 / self._nhc * self._mass * \
+                    (prev_acceleration - prev_velocity * prev_fric)**2
+            self._velocity = (prev_velocity * (2 - time_step * prev_fric) + time_step *
+                              (prev_acceleration + self.acceleration)) / \
+                (2 + time_step * self._fric)
+        else:
+            self._position = prev_position + prev_velocity * time_step + \
+                             0.5 * prev_acceleration * time_step ** 2
+            self._velocity = prev_velocity + 0.5 * time_step * \
+                                             (prev_acceleration + self.acceleration)
         if return_prev:
             ret_values = self._position, self._velocity, prev_position, prev_velocity
         else:
