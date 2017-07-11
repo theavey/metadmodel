@@ -180,7 +180,7 @@ class Simulation(object):
         """
         fig, ax = plt.subplots()
         if self._dimension == 1:
-            ax.plot(self.positions)
+            ax.plot(self.positions, **kwargs)
             ax.set_xlabel('time step')
             ax.set_ylabel('$x$')
             fig.tight_layout()
