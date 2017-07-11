@@ -18,6 +18,9 @@ not, see http://www.gnu.org/licenses/.
 import autograd as ag
 import autograd.numpy as anp
 import math
+import matplotlib.pyplot as plt
+import numpy as np
+from typing import Tuple, Callable
 
 
 class FES(object):
@@ -184,6 +187,7 @@ class MetadFES1D(FES1D):
         self._hill_list = []  # might be better to do an array? pre-allocated?
         self._fes_with_hills = self._func
         self._grad_func = ag.grad(self._fes_with_hills)
+        self._hills: Callable = None
 
     def _gaussian(self, center: float):
         """
@@ -224,6 +228,37 @@ class MetadFES1D(FES1D):
         :return: value of the FES and hills at this location
         """
         return self._fes_with_hills(x)
+
+    def plot_hills(self, points: int=300, minmax: Tuple[float, float]=None,
+                   expand: float=0.1, **kwargs) -> plt.figure:
+        """
+        Plot the metadynamics hills and return the figure
+
+        :param points: number of points to plot
+        :param minmax: minimum and maximum of the plot range
+        :param expand: factor to plot beyond min and max of added hills
+
+        This is ignored if minmax is given
+        :param kwargs: arguments to be passed to ax.plot
+        :return: figure of the plot
+        """
+        if not self._hill_list:
+            print('No hills listed. Are you sure this has been run already?')
+            return None
+        if self._hills is None:
+            self._hills = self._make_hills()
+        if minmax:
+            min_hill, max_hill = minmax
+        else:
+            min_hill, max_hill = min(self._hill_list), max(self._hill_list)
+            span = abs(max_hill - min_hill)
+            min_hill, max_hill = min_hill - expand * span, max_hill + expand * span
+        x = np.linspace(min_hill, max_hill, points)
+        fig, ax = plt.subplots()
+        ax.plot(x, self._hills(x), **kwargs)
+        fig.tight_layout()
+        return fig
+
 
 
 class MetadFES2D(FES2D):
