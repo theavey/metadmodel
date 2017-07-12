@@ -63,6 +63,8 @@ class Particle(object):
             self._velocity = float(v0)
         self._nhc = float(nh_const)
 
+        self.frics = []
+
     @property
     def position(self):
         """
@@ -179,6 +181,7 @@ class Particle(object):
         prev_velocity = self._velocity
         prev_acceleration = self.acceleration
         prev_fric = self._fric
+        self.frics.append(prev_fric)
         if self._temp:
             self._position = prev_position + prev_velocity * time_step + \
                 0.5 * (prev_acceleration - prev_fric * prev_velocity) * time_step**2
