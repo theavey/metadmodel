@@ -230,7 +230,7 @@ class MetadFES1D(FES1D):
         return self._fes_with_hills(x)
 
     def plot_hills(self, points: int=300, minmax: Tuple[float, float]=None,
-                   expand: float=0.1, **kwargs) -> plt.figure:
+                   expand: float=0.1, **kwargs, mintozero: bool=True) -> plt.figure:
         """
         Plot the metadynamics hills and return the figure
 
@@ -255,7 +255,12 @@ class MetadFES1D(FES1D):
             min_hill, max_hill = min_hill - expand * span, max_hill + expand * span
         x = np.linspace(min_hill, max_hill, points)
         fig, ax = plt.subplots()
-        ax.plot(x, self._hills(x), **kwargs)
+        hills = - self._hills(x)
+        if mintozero:
+            hills = hills + min(hills)
+        ax.plot(x, hills, **kwargs)
+        ax.set_xlabel('$x$')
+        ax.set_ylabel('$V$')
         fig.tight_layout()
         return fig
 
