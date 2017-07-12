@@ -258,7 +258,7 @@ class MetadFES1D(FES1D):
         fig, ax = plt.subplots()
         hills = - self._hills(x)
         if mintozero:
-            hills = hills + min(hills)
+            hills = hills - min(hills)
         ax.plot(x, hills, **kwargs)
         ax.set_xlabel('$x$')
         ax.set_ylabel('$V$')
