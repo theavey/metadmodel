@@ -194,4 +194,8 @@ class Simulation(object):
         else:
             raise NotImplementedError
 
-    # todo put in access to plot_hills
+    def plot_hills(self, **kwargs): return self.particle.plot_hills(**kwargs)
+
+    def plot_eff_fes(self, **kwargs): return self.particle.plot_eff_fes(**kwargs)
+
+    def plot_fes(self, **kwargs): return self.particle.plot_fes(**kwargs)

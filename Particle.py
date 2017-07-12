@@ -197,3 +197,12 @@ class Particle(object):
         :return:
         """
         self._FES.add_hill(self.position)
+
+    # I'm not sure if this is the best way to pass through functions, but it should work.
+    # Passing lambdas back might be better. Not sure if either will help with
+    # documentation being passed through transparently.
+    def plot_hills(self, **kwargs): return self._FES.plot_hills(**kwargs)
+
+    def plot_eff_fes(self, **kwargs): return self._FES.plot_eff_fes(**kwargs)
+
+    def plot_fes(self, **kwargs): return self._FES.plot_fes(**kwargs)

@@ -97,6 +97,15 @@ class FES(object):
     def add_hill(self, *args):
         raise AttributeError('Cannot add a hill to this non-metadynamics FES!')
 
+    def plot_hills(self, **kwargs):
+        raise AttributeError('Cannot plot hills from this non-metadynamics FES')
+
+    def plot_eff_fes(self, **kwargs):
+        raise AttributeError('Cannot plot effective FES from this non-metadynamics FES')
+
+    def plot_fes(self, **kwargs):
+        pass
+
 
 class FES1D(FES):
     """"""
