@@ -187,3 +187,5 @@ class Simulation(object):
             return fig
         else:
             raise NotImplementedError
+
+    # todo put in access to plot_hills
