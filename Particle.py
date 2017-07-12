@@ -181,9 +181,9 @@ class Particle(object):
                 (2 + time_step * self._fric)
         else:
             self._position = prev_position + prev_velocity * time_step + \
-                             0.5 * prev_acceleration * time_step ** 2
+                0.5 * prev_acceleration * time_step ** 2
             self._velocity = prev_velocity + 0.5 * time_step * \
-                                             (prev_acceleration + self.acceleration)
+                (prev_acceleration + self.acceleration)
         if return_prev:
             ret_values = self._position, self._velocity, prev_position, prev_velocity
         else:

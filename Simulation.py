@@ -170,7 +170,7 @@ class Simulation(object):
                 if i % self._metad_freq == 0:
                     self.particle.add_hill()
                 self._time_step(i)
-        print(f'Done running {steps}!')
+        print(f'Done running {steps} steps!')
 
     # Analysis and Plotting #####################
 
