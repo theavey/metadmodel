@@ -17,12 +17,13 @@ not, see http://www.gnu.org/licenses/.
 
 import numpy as np
 from . import FES
+from random import gauss
 
 
 class Particle(object):
     """"""
 
-    def __init__(self, fes: FES.FES, x0: float, v0: float, mass: float=1.,
+    def __init__(self, fes: FES.FES, x0: float, v0: float=None, mass: float=1.,
                  time_step_size: float=1., temp: float=None,
                  nh_const: float=None):
         """
@@ -30,6 +31,11 @@ class Particle(object):
         :param FES.FES fes: FES on which the particle moves
         :param np.array x0: initial position of the particle
         :param np.array v0: initial velocity of the particle
+
+        If a temperature is provided, and a velocity is not, the velocity will be
+        randomly selected from a normal distribution with mean zero and sigma sqrt(kT/m).
+
+        If no temperature or velocity is provided, an error will be raised.
         :param float mass: mass of the particle
         :param float time_step_size: size of time steps to take
         :param temp: temperature of the particle (for constant T simulations) in units of
@@ -38,7 +44,6 @@ class Particle(object):
         """
         self._FES = fes
         self._mass = float(mass)
-        self._velocity = float(v0)
         self._position = float(x0)
         self._fric = 0.
         self._time_step_size = float(time_step_size)
@@ -48,6 +53,14 @@ class Particle(object):
             if not nh_const:
                 raise SyntaxError('If temp is defined (const. T simulation) the '
                                   'Nose-Hoover constant nh_const must also be defined')
+            if v0 is None:
+                self._velocity = gauss(0, np.sqrt(self._temp / self._mass))
+            else:
+                self._velocity = float(v0)
+        elif v0 is None:
+            raise SyntaxError('If temp is not defined, v0 must be given.')
+        else:
+            self._velocity = float(v0)
         self._nhc = float(nh_const)
 
     @property
