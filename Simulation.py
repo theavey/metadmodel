@@ -141,7 +141,7 @@ class Simulation(object):
         new_position, new_velocity = self.particle.move(1)
         self.trajectory[step_num] = new_position, new_velocity
 
-    def run(self, steps: int =1000):
+    def run(self, steps: int =1000, status_int: int=1000):
         """
         Run the simulation for a number of steps
 
@@ -158,9 +158,15 @@ class Simulation(object):
         self._trajectory[0] = self.particle.position, self.particle.velocity
         if not self._metad:
             for i in range(1, steps+1):
+                if i % status_int == 0:
+                    percent = float(i) / float(steps) * 100.
+                    print(f'On step {i}, {percent}% done.')
                 self._time_step(i)
         else:
             for i in range(1, steps+1):
+                if i % status_int == 0:
+                    percent = float(i) / float(steps) * 100.
+                    print(f'On step {i}, {percent}% done.')
                 if i % self._metad_freq == 0:
                     self.particle.add_hill()
                 self._time_step(i)
