@@ -256,7 +256,7 @@ class MetadFES1D(FES1D):
             print('No hills listed. Are you sure this has been run already?')
             return None
         if self._hills is None:
-            self._hills = self._make_hills()
+            self._hills: Callable = self._make_hills()
         if minmax:
             min_hill, max_hill = minmax
         else:
@@ -303,6 +303,36 @@ class MetadFES1D(FES1D):
         ax.plot(x, self._fes_with_hills(x))
         if drawboth:
             ax.plot(x, self._func(x))
+        ax.set_xlabel('$x$')
+        ax.set_ylabel('$V$')
+        fig.tight_layout()
+        return fig
+
+    def plot_fes(self, points: int=300, minmax: Tuple[float, float]=None,
+                 expand: float=0.1, **kwargs) -> plt.figure:
+        """
+        Plot the FES on which the particle actually travels (including hills)
+
+        :param points: number of points to plot
+        :param minmax: minimum and maximum of the plot range
+        :param expand: factor to plot beyond min and max of added hills
+
+        This is ignored if minmax is given
+        :param kwargs: arguments to be passed to ax.plot
+        :return: figure of the plot
+        """
+        if not self._hill_list:
+            print('No hills listed. Are you sure this has been run already?')
+            return None
+        if minmax:
+            min_hill, max_hill = minmax
+        else:
+            min_hill, max_hill = min(self._hill_list), max(self._hill_list)
+            span = abs(max_hill - min_hill)
+            min_hill, max_hill = min_hill - expand * span, max_hill + expand * span
+        x = np.linspace(min_hill, max_hill, points)
+        fig, ax = plt.subplots()
+        ax.plot(x, self._func(x))
         ax.set_xlabel('$x$')
         ax.set_ylabel('$V$')
         fig.tight_layout()

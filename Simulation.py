@@ -141,13 +141,14 @@ class Simulation(object):
         new_position, new_velocity = self.particle.move(1)
         self.trajectory[step_num] = new_position, new_velocity
 
-    def run(self, steps: int =1000, status_int: int=1000):
+    def run(self, steps: int =1000, status_int: int=1000) -> None:
         """
         Run the simulation for a number of steps
 
         If no self.particle is yet defined, a default will be used
-        :param steps:
-        :return:
+        :param steps: number of steps for simulation
+        :param status_int: number of steps between reporting progress
+        :return: nothing
         """
         if self.particle is None:
             print('using default particle')
