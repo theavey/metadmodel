@@ -161,13 +161,13 @@ class Simulation(object):
             for i in range(1, steps+1):
                 if i % status_int == 0:
                     percent = float(i) / float(steps) * 100.
-                    print(f'On step {i}, {percent}% done.')
+                    print(f'On step {i}, {percent:.4}% done.')
                 self._time_step(i)
         else:
             for i in range(1, steps+1):
                 if i % status_int == 0:
                     percent = float(i) / float(steps) * 100.
-                    print(f'On step {i}, {percent}% done.')
+                    print(f'On step {i}, {percent:.4}% done.')
                 if i % self._metad_freq == 0:
                     self.particle.add_hill()
                 self._time_step(i)
