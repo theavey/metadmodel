@@ -22,7 +22,8 @@ from . import FES
 class Particle(object):
     """"""
 
-    def __init__(self, fes, x0, v0, mass=1., time_step_size=1., temp: float=None,
+    def __init__(self, fes: FES.FES, x0: float, v0: float, mass: float=1.,
+                 time_step_size: float=1., temp: float=None,
                  nh_const: float=None):
         """
 
@@ -36,19 +37,18 @@ class Particle(object):
         :param nh_const: The Nose-Hoover thermostat constant (often called Q)
         """
         self._FES = fes
-        self._mass = mass
-        self._velocity = v0
-        self._position = x0
-        self._fric = 0
-        self._trajectory = np.array([[x0, v0]])
-        self._time_step_size = time_step_size
+        self._mass = float(mass)
+        self._velocity = float(v0)
+        self._position = float(x0)
+        self._fric = 0.
+        self._time_step_size = float(time_step_size)
         self._metad = self._FES.metad
-        self._temp = temp
+        self._temp = float(temp)
         if self._temp:
             if not nh_const:
                 raise SyntaxError('If temp is defined (const. T simulation) the '
                                   'Nose-Hoover constant nh_const must also be defined')
-        self._nhc = nh_const
+        self._nhc = float(nh_const)
 
     @property
     def position(self):
