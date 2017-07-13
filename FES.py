@@ -209,7 +209,7 @@ class MetadFES1D(FES1D):
         """
         # return lambda x: (self._height / (self._width * (2. * math.pi))) * \
         #     anp.exp(-0.5 * ((x - center) / self._width)**2)
-        return self._height * asp.norm(loc=center, scale=self._width)
+        return lambda x: self._height * asp.stats.norm.pdf(x, loc=center, scale=self._width)
 
     def _make_hills(self):
         """"""
