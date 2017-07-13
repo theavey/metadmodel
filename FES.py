@@ -17,6 +17,7 @@ not, see http://www.gnu.org/licenses/.
 
 import autograd as ag
 import autograd.numpy as anp
+import autograd.scipy as asp
 import math
 import matplotlib.pyplot as plt
 import numpy as np
@@ -206,13 +207,16 @@ class MetadFES1D(FES1D):
         :return: Gaussian function
         :rtype: lambda
         """
-        return lambda x: (self._height / (self._width * (2. * math.pi))) * \
-            anp.exp(-0.5 * ((x - center) / self._width)**2)
+        # return lambda x: (self._height / (self._width * (2. * math.pi))) * \
+        #     anp.exp(-0.5 * ((x - center) / self._width)**2)
+        return self._height * asp.norm(loc=center, scale=self._width)
 
     def _make_hills(self):
         """"""
         if not self._hill_list:
             return lambda x: 0.
+        # Could parallelize (and save memory) by saving this as a list of Gaussians
+        # and then summing (derivatives) afterwards.
         return lambda x: sum(self._gaussian(c)(x) for c in self._hill_list)
 
     def add_hill(self, x: float) -> None:
