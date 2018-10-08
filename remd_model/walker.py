@@ -31,7 +31,7 @@ class Walker(object):
 
     @property
     def energy(self) -> float:
-        return normal(self.temp, self.temp/75.)
+        return normal(self.temp, self.temp/50.)
 
     @property
     def index(self) -> int:
