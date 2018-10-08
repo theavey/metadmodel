@@ -19,17 +19,16 @@ import numpy as np
 
 from .walker import Walker
 
-scaling_exponent = 1.
-
 
 class Replicas(object):
 
-    def __init__(self, size):
+    def __init__(self, size: int,
+                 start_temp: float=300., scaling_exponent: float=0.05):
         self.size = size
         self.walkers = np.zeros(size, dtype=Walker)
         self.temps = np.zeros(size, dtype=float)
         for i in range(size):
-            temp = np.exp(i * scaling_exponent)
+            temp = np.exp(start_temp * i * scaling_exponent)
             self.temps[i] = temp
             self.walkers[i] = Walker(i, temp)
         self.indexes = np.arange(0, size)
