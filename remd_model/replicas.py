@@ -28,7 +28,7 @@ class Replicas(object):
         self.walkers = np.zeros(size, dtype=Walker)
         self.temps = np.zeros(size, dtype=float)
         for i in range(size):
-            temp = np.exp(start_temp * i * scaling_exponent)
+            temp = start_temp * np.exp(i * scaling_exponent)
             self.temps[i] = temp
             self.walkers[i] = Walker(i, temp)
         self.indexes = np.arange(0, size)
