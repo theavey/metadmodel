@@ -27,8 +27,8 @@ class Simulation(object):
         self.n_steps = n_steps
         self.interval = interval
         self.system = System(size)
-        self.energies = np.zeros((size, n_steps), dtype=float)
-        self.states = np.zeros((size, n_steps), dtype=int)
+        self.energies = np.zeros((n_steps, size), dtype=float)
+        self.states = np.zeros((n_steps, size), dtype=int)
 
     def run(self):
         for i in range(self.n_steps):
