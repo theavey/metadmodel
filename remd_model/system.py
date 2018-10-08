@@ -28,11 +28,11 @@ class System(object):
 
     @property
     def state(self) -> np.ndarray:
-        return np.array((r.index for r in self.replicas))
+        return np.array(list((r.index for r in self.replicas)))
 
     @property
     def energies(self) -> np.ndarray:
-        return np.array((r.energy for r in self.replicas))
+        return np.array(list((r.energy for r in self.replicas)))
 
     def exchange(self) -> None:
         energies = self.energies
