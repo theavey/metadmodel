@@ -25,14 +25,30 @@ class Walker(object):
     """
 
     def __init__(self, index: int, temp: float, width_param: float=5.):
-        self._index = index
-        self.temp = temp
-        self.width_param = width_param
+        self._w_index: int = index
+        self._r_index: int = index
+        self.temp: float = temp
+        self.width_param: float = width_param
 
     @property
     def energy(self) -> float:
         return normal(self.temp, self.temp/self.width_param)
 
     @property
-    def index(self) -> int:
-        return self._index
+    def w_index(self) -> int:
+        return self._w_index
+
+    @property
+    def r_index(self) -> int:
+        return self._w_index
+
+    @r_index.setter
+    def r_index(self, val: int):
+        if abs(val - self._r_index) > 1 or val == self._r_index:
+            raise ValueError(f'New replica index value must be +/- 1. '
+                             f'Old: {self._r_index}. New: {val}')
+        self._r_index = val
+
+    def __repr__(self) -> str:
+        return (f'{self.__class__} with w_index {self.w_index} '
+                f'and r_index {self.r_index}')

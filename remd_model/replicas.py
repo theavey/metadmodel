@@ -38,7 +38,7 @@ class Replicas(object):
         return self.replicas.__iter__()
 
     @property
-    def replicas(self):
+    def replicas(self) -> np.ndarray:
         return np.array(self.walkers[self.indexes])
 
     def exchange(self, lower_ind):
