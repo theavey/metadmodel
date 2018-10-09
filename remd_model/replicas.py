@@ -32,20 +32,25 @@ class Replicas(object):
             temp = start_temp * np.exp(i * scaling_exponent)
             self.temps[i] = temp
             self.walkers[i] = Walker(i, temp, width_param=width_param)
-        self.indexes = np.arange(0, size)
+        self.w_indexes = np.arange(0, size)
+        self._r_indexes = np.arange(0, size)
 
     def __iter__(self):
         return self.replicas.__iter__()
 
     @property
     def replicas(self) -> np.ndarray:
-        return np.array(self.walkers[self.indexes])
+        return self.walkers[self.w_indexes]
+
+    @property
+    def r_indexes(self) -> np.ndarray:
+        return np.array(list((w.r_index for w in self.walkers)))
 
     def exchange(self, lower_ind: int):
         indexer: list[int] = [lower_ind, lower_ind + 1]
         temps: np.ndarray(dtype=float, shape=(2,)) = self.temps[indexer]
-        inds: np.ndarray(dtype=int, shape=(2,)) = self.indexes[indexer]
-        self.indexes[indexer] = inds[::-1]
+        inds: np.ndarray(dtype=int, shape=(2,)) = self.w_indexes[indexer]
+        self.w_indexes[indexer] = inds[::-1]
         for walker, temp, index in zip(self.replicas[indexer], temps, indexer):
             walker.temp = temp
             walker.r_index = index

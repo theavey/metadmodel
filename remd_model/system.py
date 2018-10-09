@@ -32,8 +32,12 @@ class System(object):
         self._last_exchange_even = False
 
     @property
-    def state(self) -> np.ndarray:
-        return self.replicas.indexes
+    def w_state(self) -> np.ndarray:
+        return self.replicas.w_indexes
+
+    @property
+    def r_state(self) -> np.ndarray:
+        return self.replicas.r_indexes
 
     @property
     def energies(self) -> np.ndarray:

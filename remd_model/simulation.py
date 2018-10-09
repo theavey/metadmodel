@@ -32,11 +32,13 @@ class Simulation(object):
                              scaling_exponent=scaling_exponent,
                              width_param=width_param)
         self.energies = np.zeros((n_steps, size), dtype=float)
-        self.states = np.zeros((n_steps, size), dtype=int)
+        self.w_states = np.zeros((n_steps, size), dtype=int)
+        self.r_states = np.zeros((n_steps, size), dtype=int)
 
     def run(self):
         for i in range(self.n_steps):
             self.energies[i] = self.system.energies
-            self.states[i] = self.system.state
+            self.w_states[i] = self.system.w_state
+            self.r_states[i] = self.system.r_state
             if ((i+1) % self.interval) == 0:
                 self.system.exchange()
