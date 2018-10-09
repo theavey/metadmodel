@@ -43,7 +43,7 @@ class System(object):
         energies = self.energies
         temps = self.replicas.temps
         offset = 1 if self._last_exchange_even else 0
-        n = self.size + offset % 2
+        n = np.floor((self.size + offset) / 2.)
         probs = np.zeros(n, dtype=float)
         rands = np.random.rand(n)
         for i in range(n):
