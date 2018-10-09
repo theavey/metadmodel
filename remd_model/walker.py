@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License along with thi
 not, see http://www.gnu.org/licenses/.
 """
 
-from numpy import exp
 from numpy.random import normal
 
 
@@ -25,13 +24,14 @@ class Walker(object):
 
     """
 
-    def __init__(self, index: int, temp: float):
+    def __init__(self, index: int, temp: float, width_param: float=5.):
         self._index = index
         self.temp = temp
+        self.width_param = width_param
 
     @property
     def energy(self) -> float:
-        return normal(self.temp, self.temp/10.)
+        return normal(self.temp, self.temp/self.width_param)
 
     @property
     def index(self) -> int:

@@ -21,9 +21,14 @@ from .replicas import Replicas
 
 class System(object):
 
-    def __init__(self, size: int):
+    def __init__(self, size: int,
+                 start_temp: float=300., scaling_exponent: float=0.05,
+                 width_param=5):
         self.size = size
-        self.replicas = Replicas(size)
+        self.replicas = Replicas(size,
+                                 start_temp=start_temp,
+                                 scaling_exponent=scaling_exponent,
+                                 width_param=width_param)
         self._last_exchange_even = False
 
     @property

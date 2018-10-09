@@ -22,11 +22,15 @@ from .system import System
 
 class Simulation(object):
 
-    def __init__(self, size: int, n_steps: int, interval: int):
+    def __init__(self, size: int, n_steps: int, interval: int,
+                 start_temp: float=300., scaling_exponent: float=0.05,
+                 width_param: float=5.):
         self.size = size
         self.n_steps = n_steps
         self.interval = interval
-        self.system = System(size)
+        self.system = System(size, start_temp=start_temp,
+                             scaling_exponent=scaling_exponent,
+                             width_param=width_param)
         self.energies = np.zeros((n_steps, size), dtype=float)
         self.states = np.zeros((n_steps, size), dtype=int)
 

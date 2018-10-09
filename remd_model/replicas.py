@@ -23,14 +23,15 @@ from .walker import Walker
 class Replicas(object):
 
     def __init__(self, size: int,
-                 start_temp: float=300., scaling_exponent: float=0.05):
+                 start_temp: float=300., scaling_exponent: float=0.05,
+                 width_param: float=5.):
         self.size = size
         self.walkers = np.zeros(size, dtype=Walker)
         self.temps = np.zeros(size, dtype=float)
         for i in range(size):
             temp = start_temp * np.exp(i * scaling_exponent)
             self.temps[i] = temp
-            self.walkers[i] = Walker(i, temp)
+            self.walkers[i] = Walker(i, temp, width_param=width_param)
         self.indexes = np.arange(0, size)
 
     def __iter__(self):
