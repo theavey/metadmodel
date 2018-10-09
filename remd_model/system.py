@@ -49,7 +49,8 @@ class System(object):
         for i in range(n):
             ind = 2 * i + offset
             expo = ((energies[ind] - energies[ind+1]) *
-                    (1 / temps[ind] - 1 / temps[ind+1]))
+                    (1 / temps[ind] - 1 / temps[ind+1]) *
+                    1e3)
             probs[i] = min(1, np.exp(expo))
             if probs[i] > rands[i]:
                 self.replicas.exchange(ind)
