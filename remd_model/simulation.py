@@ -38,5 +38,5 @@ class Simulation(object):
         for i in range(self.n_steps):
             self.energies[i] = self.system.energies
             self.states[i] = self.system.state
-            if i+1 % self.interval == 0:
+            if ((i+1) % self.interval) == 0:
                 self.system.exchange()
