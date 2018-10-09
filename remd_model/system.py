@@ -33,7 +33,7 @@ class System(object):
 
     @property
     def state(self) -> np.ndarray:
-        return np.array(list((r.index for r in self.replicas)))
+        return self.replicas.indexes
 
     @property
     def energies(self) -> np.ndarray:
