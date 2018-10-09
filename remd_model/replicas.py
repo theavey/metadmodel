@@ -41,10 +41,11 @@ class Replicas(object):
     def replicas(self) -> np.ndarray:
         return np.array(self.walkers[self.indexes])
 
-    def exchange(self, lower_ind):
-        indexer = [lower_ind, lower_ind + 1]
-        temps = self.temps[indexer]
-        inds = self.indexes[indexer]
+    def exchange(self, lower_ind: int):
+        indexer: list[int] = [lower_ind, lower_ind + 1]
+        temps: np.ndarray(dtype=float, shape=(2,)) = self.temps[indexer]
+        inds: np.ndarray(dtype=int, shape=(2,)) = self.indexes[indexer]
         self.indexes[indexer] = inds[::-1]
-        for walker, temp in zip(self.replicas[indexer], temps):
+        for walker, temp, index in zip(self.replicas[indexer], temps, indexer):
             walker.temp = temp
+            walker.r_index = index

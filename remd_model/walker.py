@@ -40,7 +40,7 @@ class Walker(object):
 
     @property
     def r_index(self) -> int:
-        return self._w_index
+        return self._r_index
 
     @r_index.setter
     def r_index(self, val: int):
